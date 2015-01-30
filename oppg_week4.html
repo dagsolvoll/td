@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=ISO-8859-1"> 
+    <title>Oppgaver til uke 4</title>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+      });
+    </script>
+    <script type="text/javascript"
+        src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <style type="text/css">
+    html,body {
+        margin-left: 2cm;
+        margin-right: 2cm;
+        max-width: 28cm
+
+    }
+    p.b {
+        font-weight: bold;
+    }
+    </style>
+</head>
+<body>
+    <h2>Oppgavene til denne uken er:</h2>
+    <ul>
+        <li>08.06.13:1a-e</li>
+        <li>24.05.07:1a-c</li>
+        <li>03.06.06:1a</li>
+    </ul>
+
+    <h3>Du får oppgitt 3 funksjoner:</h3>
+    <p>
+    \(
+        f = (x+y)ln(\frac{x}{y})
+    \)
+    </p>
+    <p>
+    $
+        g = ln(\frac{x}{y}) + \frac{x + y}{x}
+    $
+    </p>
+    <p>
+    $
+        h = \frac{1}{y} + \frac{1}{y}
+    $
+    </p>
+
+    <h4>a) Hvilke(n) av disse funksjonene kan sies å være "Euler-homogene" funksjoner? Gi en matematisk begrunnelse.</h4>
+    <p>
+     Let f(x,y) be a homogeneous function of order n so that :
+    </p>
+    <p>$
+            f(tx,ty)=t^nf(x,y). 
+        $
+    </p>
+    <p> Prøver så å sette inn i likningene:</p>
+    <p>
+        $
+            f(tx,ty) = (tx + ty) ln(\frac{tx}{ty}) = t f(x,y) 
+        $
+    </p>
+    <p class="b">
+        Så denne stemmer for n = 1
+    </p>
+
+    <p>
+        $
+            g(tx,ty) = ln(\frac{tx}{ty}) + \frac{tx + ty}{tx} = t^0 g(x,y)
+        $
+    </p>
+    <p class="b">
+        Så denne stemmer for n = 0
+    </p>
+
+    <p>  
+        $
+            h(tx,ty) = \frac{1}{ty} + \frac{1}{tx} = \frac{1}{t} f(x,y) = t^{-1} f(x,y)
+        $
+    </p>
+    <p class="b">
+        Så denne stemmer for n = -1
+    </p>
+
+    <h4>
+        b) Vær nøye med å angi homogenitetsgraden k $\in$ Z for hvert av svarene som ble avgitt i punkt a).
+    </h4>
+    <p>Har valg n istedet for k, så da er vel svaret allerede gitt</p>
+
+    <h4> c)
+        En av funksjonene f , g, h kan uttrykkes som $F = \sum_i (\frac{\partial F}{\partial X_i}) X_i $. Hvilken? Gi minst
+to eksempler fra termodynamikken hvor denne formelen kommer til anvendelse.
+    </h4>
+</body>
+</html>
+
+
