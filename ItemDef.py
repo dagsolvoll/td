@@ -12,6 +12,13 @@ class BaseUnit:
         pass
 
 SUPPLIER = 'supplier'
+BRAND = 'brand'
+DESCRIPTION = 'description'
+GROSS_WEIGTH = 'grossweight'
+DEPTH = 'depth'
+HEIGHT = 'height'
+WIDTH = 'width'
+QUANTITY_IN_PREV_LEVEL = 'quantity'
 
 class Item:
 
@@ -54,19 +61,6 @@ class Item:
 
         for key in self.attributes:
             retstr += str(key) + ": " + str(self.attributes[key])
-
-        if self.brandname:
-            retstr += ", brandname = " + self.brandname
-        if self.description:
-            retstr += ", descr = " + self.description
-        if self.depth:
-            retstr += ", depth = [" + self.depth[0] + ", " + self.depth[1] + "] "
-        if self.grossweight:
-            retstr += ", grossweight = [" + self.grossweight[0] + ", " + self.grossweight[1] + "] "
-        if self.height:
-            retstr += ", height = [" + self.height[0] + ", " + self.height[1] + "] "
-        if self.width:
-            retstr += ", width = [" + self.width[0] + ", " + self.width[1] + "] "
 
         retstr += "]"
         return retstr
@@ -113,29 +107,6 @@ class Item:
         else:
             return None
 
-    def setquantity(self, q):
-        self.quantity = q
-
-    def getquantity(self):
-        return self.quantity
-
-    def setbrandname(self, bn):
-        self.brandname = bn
-
-    def setdescription(self, desc):
-        self.description = desc
-
-    def setdepth(self, d, uom):
-        self.depth = [d, uom]
-
-    def setgrossweight(self, d, uom):
-        self.grossweight = [d, uom]
-
-    def setheight(self, d, uom):
-        self.height = [d, uom]
-
-    def setwidth(self, d, uom):
-        self.width = [d, uom]
 
     def addChild(self, child):
         self.children.append(child)

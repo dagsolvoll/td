@@ -26,7 +26,6 @@ def str2bool(v):
   return v.lower() in ("yes", "true", "t", "1")
 
 def findSingleElem(root, name):
-    global ns
     retval = None
     elm = root.findall(name, ns)
     if elm:
@@ -34,7 +33,6 @@ def findSingleElem(root, name):
     return retval
 
 def findAttribute(root, name, attribname):
-    global ns
     retval = None
     elm = root.findall(name, ns)
     if elm and elm[0].attrib[attribname]:
@@ -42,7 +40,6 @@ def findAttribute(root, name, attribname):
     return retval
 
 def parseTUInfomation(tradeItemElm, item):
-    global ns
     gln = findSingleElem(tradeItemElm, "tradeItemInformation/informationProviderOfTradeItem/informationProvider/gln")
     name = findSingleElem(tradeItemElm, "tradeItemInformation/informationProviderOfTradeItem/nameOfInformationProvider")
     brandName = findSingleElem(tradeItemElm, "tradeItemInformation/tradeItemDescriptionInformation/brandName")
@@ -56,15 +53,15 @@ def parseTUInfomation(tradeItemElm, item):
     grossWeight = findSingleElem(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/grossWeight/measurementValue/value")
     grossWeightUoM = findAttribute(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/grossWeight/measurementValue", "unitOfMeasure")
     item.setattributes(ItemDef.SUPPLIER, [gln,name])
-    item.setbrandname(brandName)
-    item.setdescription(descr)
-    item.setdepth(depth, depthUoM)
-    item.setgrossweight(grossWeight, grossWeightUoM)
-    item.setwidth(width, widthUoM)
-    item.setheight(height, heightUoM)
+    item.setattributes(ItemDef.BRAND, brandName)
+    item.setattributes(ItemDef.DESCRIPTION, descr)
+    item.setattributes(ItemDef.DEPTH, [depth, depthUoM])
+    item.setattributes(ItemDef.GROSS_WEIGTH, [grossWeight, grossWeightUoM])
+    item.setattributes(ItemDef.WIDTH, [width, widthUoM])
+    item.setattributes(ItemDef.HEIGHT, [height, heightUoM])
 
 def parseTradeItem(pre, tradeItem):
-    global ns, itemDict, rootItem
+    global itemDict, rootItem
     gtin = tradeItem.findall("tradeItemIdentification/gtin", ns)
     item = None
     if gtin[0].text in itemDict:
@@ -106,13 +103,12 @@ def parseTradeItem(pre, tradeItem):
 
             nl = ch.findall("quantityofNextLowerLevelTradeItem", ns)
             if nl:
-                nit.setquantity(nl[0].text)
+                nit.setattributes(ItemDef.QUANTITY_IN_PREV_LEVEL, nl[0].text)
             item.addChild(nit)
             nit.addParent(item)
     parseTUInfomation(tradeItem, item)
 
 def parseCatalogItem(pre, ci):
-    global ns
     dataRep = ci.findall("dataRecipient", ns)
     sourceDataPool = ci.findall("sourceDataPool", ns)
     tradeItem = ci.findall("tradeItem", ns)
