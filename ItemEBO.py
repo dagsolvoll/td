@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import ElementTree
+import ItemDef
 
 class ItemEBO:
     
@@ -21,13 +22,14 @@ class ItemEBO:
         elif item.isbaseunit():
             pt.text = "Each"
 
-        if item.getprovider():
+
+        if item.getattributes(ItemDef.SUPPLIER):
             sup = ET.SubElement(it, "Supplier")
             supn = ET.SubElement(sup, "SupplierName")
-            supn.text = item.getprovider()[1]
+            supn.text = item.getattributes('supplier')[1]
             sss = ET.SubElement(sup, "SupplierSite")
             gln = ET.SubElement(sss, "GlobalIdentificationNumber")
-            gln.text = item.getprovider()[0]
+            gln.text = item.getattributes('supplier')[0]
 
         for c in item.getchildren():
             pr = ET.SubElement(it, "PackRelation")

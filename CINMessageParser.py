@@ -1,10 +1,12 @@
 import xml.etree.ElementTree as ET
 from datetime import date
 from BuyingBuilder import BuyingBuilder
-from Item import Item
-from Item import Pallet
-from Item import TradeUnit
-from Item import BaseUnit
+
+from ItemDef import Item
+from ItemDef import Pallet
+from ItemDef import TradeUnit
+from ItemDef import BaseUnit
+import ItemDef
 from DBReader import FileReader
 from DBReader import DBReader
 from ItemEBO import ItemEBO
@@ -53,7 +55,7 @@ def parseTUInfomation(tradeItemElm, item):
     widthUoM = findAttribute(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/width/measurementValue", "unitOfMeasure")
     grossWeight = findSingleElem(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/grossWeight/measurementValue/value")
     grossWeightUoM = findAttribute(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/grossWeight/measurementValue", "unitOfMeasure")
-    item.setprovider(gln, name)
+    item.setattributes(ItemDef.SUPPLIER, [gln,name])
     item.setbrandname(brandName)
     item.setdescription(descr)
     item.setdepth(depth, depthUoM)

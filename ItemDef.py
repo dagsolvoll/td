@@ -11,6 +11,8 @@ class BaseUnit:
     def __init__(self):
         pass
 
+SUPPLIER = 'supplier'
+
 class Item:
 
     def __init__(self, gtin=None):
@@ -20,8 +22,9 @@ class Item:
         self.pallet = None
         self.tradeunit = None
         self.baseunit = None
+        self.attributes = {}
+
         self.quantity = None
-        self.provider = None
         self.brandname = None
         self.description = None
         self.depth = None
@@ -48,8 +51,10 @@ class Item:
             typ = "BU"
         retstr = "Item: [gtin=" + self.gtin + ", " + \
             "Type: "  + typ + ", Qty: " + str(self.quantity)
-        if len(self.provider) > 0:
-            retstr += "Provider:(" + self.provider[0] + ", " + self.provider[1] + ")"
+
+        for key in self.attributes:
+            retstr += str(key) + ": " + str(self.attributes[key])
+
         if self.brandname:
             retstr += ", brandname = " + self.brandname
         if self.description:
@@ -99,17 +104,20 @@ class Item:
     def ispallet(self):
         return self.pallet != None
 
+    def setattributes(self, name, value):
+        self.attributes[name] = value
+
+    def getattributes(self, name):
+        if name in self.attributes:
+            return self.attributes[name]
+        else:
+            return None
+
     def setquantity(self, q):
         self.quantity = q
 
     def getquantity(self):
         return self.quantity
-
-    def setprovider(self, gln, name):
-        self.provider = [gln, name]
-
-    def getprovider(self):
-        return self.provider
 
     def setbrandname(self, bn):
         self.brandname = bn
