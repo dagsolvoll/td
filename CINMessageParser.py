@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 from datetime import date
-from BuyingBuilder import BuyingBuilder
 
+from BuyingBuilder import BuyingBuilder
 from ItemDef import Item
 from ItemDef import Pallet
 from ItemDef import TradeUnit
@@ -142,10 +142,10 @@ def mainFunc():
     num = rootItem.setitemnumber(1)
     ebo = ItemEBO(rootItem, 1)
     ebo.build()
-    rootItem = None 
-    itemDict = {}
+#    ebo.dump()
 
-    print (str(num) + "\n\n")
+    bb = BuyingBuilder(ebo.getrootelement())
+    bb.producecontract()
 
 #    for mn in [2833267, 2833355, 2832436, 2880958, 2887691, 2904200]:
 #        root = dr.readmessage(mn)

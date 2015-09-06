@@ -6,6 +6,7 @@ class ItemEBO:
     
     def __init__(self, robj, itemseq):
         self.rootObj = robj
+        self.rootElement = None
 
     def buildItem(self, packstruct, item):
         it = ET.SubElement(packstruct, "Item")
@@ -86,12 +87,16 @@ class ItemEBO:
             self.buildItem(packstruct, c)
 
     def build(self):
-        root = ET.Element("ItemEBO")
-        ps = ET.SubElement(root, "PackStructure")
+        self.rootElement = ET.Element("ItemEBO")
+        ps = ET.SubElement(self.rootElement, "PackStructure")
         self.buildItem(ps, self.rootObj)
 
-        tree = ElementTree()
-        tree._setroot(root)
-        tree.write('ebo.xml')
-        ET.dump(root) 
 
+    def dump(self):
+        ET.dump(self.rootElement) 
+        tree = ElementTree()
+        tree._setroot(self.rootElement)
+        tree.write('ebo.xml')
+
+    def getrootelement(self):
+        return self.rootElement
