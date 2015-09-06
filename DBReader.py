@@ -1,5 +1,9 @@
 import sys
-import cx_Oracle
+try:
+    import cx_Oracle
+except ImportError as ex:
+    print ("cx_Oracle finnes ikke (\"" + str(ex) + "\")")
+
 import xml.etree.ElementTree as ET
 
 user = "prod_user"
