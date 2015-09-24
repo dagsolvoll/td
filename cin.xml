@@ -91,7 +91,9 @@
 											</targetMarketInformation>
 											<classificationCategoryCode>
 												<classificationCategoryCode>10000045</classificationCategoryCode>
-												<classificationCategoryDefinition>Includes any products that can be described/observed as a portion of chocolate or chocolate substitute confectionery or a confectionery item that is a combination of chocolate and sugar candy that may contain additional ingredients such as fondant, nougat, marzipan, caramel, candy cream, nuts, coconut, dried fruits, and other soft fillings. These products may be sold individually, or packaged to provide a quantity of similar items. Excludes products such as pure Sugar Candy Products with no chocolate coating. Excludes products such as Cooking Chocolate.</classificationCategoryDefinition>
+												<classificationCategoryDefinition>
+													Includes any products that can be described/observed as a portion of chocolate or chocolate substitute confectionery or a confectionery item that is a combination of chocolate and sugar candy that may contain additional ingredients such as fondant, nougat, marzipan, caramel, candy cream, nuts, coconut, dried fruits, and other soft fillings. These products may be sold individually, or packaged to provide a quantity of similar items. Excludes products such as pure Sugar Candy Products with no chocolate coating. Excludes products such as Cooking Chocolate.
+												</classificationCategoryDefinition>
 												<classificationCategoryName>Chocolate and Chocolate/Sugar Candy Combinations - Confectionery</classificationCategoryName>
 											</classificationCategoryCode>
 											<tradeItemDescriptionInformation>

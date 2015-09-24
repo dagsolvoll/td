@@ -14,11 +14,15 @@ class BaseUnit:
 SUPPLIER = 'supplier'
 BRAND = 'brand'
 DESCRIPTION = 'description'
-GROSS_WEIGTH = 'grossweight'
+GROSS_WEIGHT = 'grossweight'
 DEPTH = 'depth'
 HEIGHT = 'height'
 WIDTH = 'width'
 QUANTITY_IN_PREV_LEVEL = 'quantity'
+NET_CONTENT = 'netcontent'
+COMP_CONTENT = 'comp_content'
+DEPOSIT = 'deposit'
+DEPOSITS = 'deposits'
 
 class Item:
 
@@ -69,7 +73,10 @@ class Item:
         self.gtin = gtin
 
     def getgtin(self):
-        return self.gtin
+        if self.gtin[0] == "0":
+            return self.gtin[1:]
+        else:
+            return self.gtin
 
     def setbaseunit(self, bu):
         self.baseunit = bu
@@ -119,10 +126,20 @@ class Item:
         self.parents.append(parent)
         return self
 
-    def setitemnumber(self, startnumber):
-        self.itemnumber = startnumber
+    def getparents(self):
+        return self.parents
+
+    def setitemnumber(self, dbreader, startnumber):
+        if dbreader:
+            print("GTIN: " + self.getgtin())
+            self.itemnumber = dbreader.readItemNo(self.getgtin())
+            if not self.itemnumber:
+                self.itemnumber = startnumber
+        else:
+            self.itemnumber = startnumber
+
         for c in self.children:
-            startnumber = c.setitemnumber(startnumber + 1)
+            startnumber = c.setitemnumber(dbreader, startnumber + 1)
         return startnumber
 
     def getitemnumber(self):
@@ -130,6 +147,6 @@ class Item:
 
 
     def dump(self, pre):
-        print(pre + str(self))
+        #print(pre + str(self))
         for i in self.children:
             i.dump(pre + "    ")

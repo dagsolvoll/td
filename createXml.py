@@ -37,7 +37,7 @@ def getBuyingItem(id):
     except: 
         pass
     cur.close()
-
+        
 def createXml(biId):
     global con
     cur = con.cursor()

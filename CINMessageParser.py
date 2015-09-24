@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 from datetime import date
-from BuyingBuilder import BuyingBuilder
 
+from BuyingBuilder import BuyingBuilder
 from ItemDef import Item
 from ItemDef import Pallet
 from ItemDef import TradeUnit
@@ -20,6 +20,7 @@ ns = {
     "schemaLocation": "http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader http://www.gs1globalregistry.net/2.7/schemas/sbdh/StandardBusinessDocumentHeader.xsd  urn:ean.ucc:2 http://www.gs1globalregistry.net/2.7/schemas/CatalogueItemNotificationProxy.xsd"
 }
 rootItem = None
+deposits = {}
 itemDict = {}
 
 def str2bool(v):
@@ -48,20 +49,30 @@ def parseTUInfomation(tradeItemElm, item):
     depthUoM = findAttribute(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/depth/measurementValue", "unitOfMeasure")
     height = findSingleElem(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/height/measurementValue/value")
     heightUoM = findAttribute(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/height/measurementValue", "unitOfMeasure")
-    width = findSingleElem(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/width/measurementValue/value")
-    widthUoM = findAttribute(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/width/measurementValue", "unitOfMeasure")
-    grossWeight = findSingleElem(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/grossWeight/measurementValue/value")
-    grossWeightUoM = findAttribute(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/grossWeight/measurementValue", "unitOfMeasure")
+    width          = findSingleElem(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/width/measurementValue/value")
+    widthUoM       = findAttribute(tradeItemElm,  "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/width/measurementValue", "unitOfMeasure")
+    grossWeight    = findSingleElem(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/grossWeight/measurementValue/value")
+    grossWeightUoM = findAttribute(tradeItemElm,  "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/grossWeight/measurementValue", "unitOfMeasure")
+    netContent     = findSingleElem(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/netContent/measurementValue/value")
+    netContentUoM  = findAttribute(tradeItemElm,  "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/netContent/measurementValue", "unitOfMeasure")
+    compcontent    = findSingleElem(tradeItemElm, "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/priceComparisonMeasurement/measurementValue/value")
+    compcontentUoM = findAttribute(tradeItemElm,  "tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemMeasurements/priceComparisonMeasurement/measurementValue", "unitOfMeasure")
+
+    print (netContent)
     item.setattributes(ItemDef.SUPPLIER, [gln,name])
     item.setattributes(ItemDef.BRAND, brandName)
     item.setattributes(ItemDef.DESCRIPTION, descr)
     item.setattributes(ItemDef.DEPTH, [depth, depthUoM])
-    item.setattributes(ItemDef.GROSS_WEIGTH, [grossWeight, grossWeightUoM])
+    item.setattributes(ItemDef.GROSS_WEIGHT, [grossWeight, grossWeightUoM])
     item.setattributes(ItemDef.WIDTH, [width, widthUoM])
     item.setattributes(ItemDef.HEIGHT, [height, heightUoM])
+    if netContent:
+        item.setattributes(ItemDef.NET_CONTENT, [netContent, netContentUoM])
+    if compcontent:
+        item.setattributes(ItemDef.COMP_CONTENT, [compcontent, compcontentUoM])
 
 def parseTradeItem(pre, tradeItem):
-    global itemDict, rootItem
+    global itemDict, rootItem, deposits
     gtin = tradeItem.findall("tradeItemIdentification/gtin", ns)
     item = None
     if gtin[0].text in itemDict:
@@ -73,6 +84,10 @@ def parseTradeItem(pre, tradeItem):
     if rootItem is None:
         rootItem = item
 
+    deposit = tradeItem.findall("tradeItemInformation/tradingPartnerNeutralTradeItemInformation/packagingMaterial/returnablePackageDepositCode", ns)
+    if (len(deposit)):
+        item.setattributes(ItemDef.DEPOSIT, deposit[0].text)
+        deposits[deposit[0].text] = deposit[0].text
     tradeItemUnitDescriptor = tradeItem.findall("tradeItemUnitDescriptor", ns)
     gln = tradeItem.findall("tradeItemIdentification/gtin", ns)
     baseunit  = tradeItem.findall("tradeItemInformation/tradingPartnerNeutralTradeItemInformation/tradeItemUnitIndicator/isTradeItemABaseUnit", ns)
@@ -90,7 +105,7 @@ def parseTradeItem(pre, tradeItem):
     childQty = tradeItem.findall("nextLowerLevelTradeItemInformation/quantityOfChildren", ns)
     children = tradeItem.findall("nextLowerLevelTradeItemInformation/childTradeItem", ns)
     ChildTotalQty = tradeItem.findall("nextLowerLevelTradeItemInformation/totalQuantityOfNextLowerLevelTradeItem", ns)
-    for ch in children:
+    for ch in children:        
         gt = ch.findall("tradeItemIdentification/gtin", ns)
         if gt:
             nit = None
@@ -125,35 +140,28 @@ def parseCatalogItem(pre, ci):
             parseCatalogItem(pre + "    ", c)
 
 def parseMsg(root):
-    global ns
+    global ns, rootItem, deposits
     message = root.getchildren()[0].getchildren()[1]
     notif = message.findall("eanucc:transaction/command/eanucc:documentCommand/documentCommandOperand/gdsn:catalogueItemNotification", ns)    
     for c in notif[0].findall("catalogueItem", ns):
         parseCatalogItem("", c)
+    rootItem.setattributes(ItemDef.DEPOSITS, deposits)
 
-def mainFunc():
-    global  rootItem, itemDict
-
-    fr = FileReader("cin.xml")
-    dr = DBReader()
-
-    root = fr.readmessage()
-    parseMsg(root)
-    num = rootItem.setitemnumber(1)
+def parseCINMessage(filename):
+    fr = FileReader(filename)
+    parseMsg(fr.readmessage())
+    num = rootItem.setitemnumber(None,1)
     ebo = ItemEBO(rootItem, 1)
     ebo.build()
-    rootItem = None 
-    itemDict = {}
+    return ebo
 
-    print (str(num) + "\n\n")
+def parseCINMessageFromDB(msgno, dbreader):
+    parseMsg(dbreader.readmessage(msgno))
+    num = rootItem.setitemnumber(dbreader,1)
+    ebo = ItemEBO(rootItem, 1)
+    ebo.build()
+    return ebo
+    
 
-#    for mn in [2833267, 2833355, 2832436, 2880958, 2887691, 2904200]:
-#        root = dr.readmessage(mn)
-#        parseMsg(root)
-#        print ("\n\n")
-#        rootItem = None
-#        itemDict = {}
 
-if __name__ == "__main__":
-    mainFunc()
 
